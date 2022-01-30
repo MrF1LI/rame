@@ -21,7 +21,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="Add Vacancy" />
+        android:text="ვაკანსიის დამატება" />
 
     <ImageView
         android:id="@+id/userIcon"

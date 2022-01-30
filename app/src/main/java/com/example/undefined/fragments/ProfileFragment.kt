@@ -37,6 +37,7 @@ class ProfileFragment: Fragment(R.layout.fragment_profile) {
     }
 
     private fun init(){
+        binding.email.text = auth.currentUser!!.email.toString()
 
         binding.buttonAddVacancy.setOnClickListener {
             startActivity(Intent(activity, AddVacancyActivity::class.java))

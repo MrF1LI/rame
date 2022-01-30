@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -59,35 +60,37 @@ class SavedFragment: Fragment(R.layout.fragment_saved), SavedVacancyAdapter.OnIt
         dbUsers.child(auth.currentUser!!.uid).child("savedVacancies").addValueEventListener(object : ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    val list: ArrayList<String> = arrayListOf()
 
-                    for (dataSnapshot in snapshot.children) {
-                        val currentItem = dataSnapshot.value.toString()
-                        list.add(currentItem)
+                val list: ArrayList<String> = arrayListOf()
+
+                for (dataSnapshot in snapshot.children) {
+                    val currentItem = dataSnapshot.value.toString()
+                    list.add(currentItem)
+                }
+
+                db.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+
+                        arrayListSavedVacancies.clear()
+
+                        for (dataSnapshot in snapshot.children) {
+                            val currentVacancy = dataSnapshot.getValue(Vacancy::class.java)?: return
+                            if (list.contains(currentVacancy.id)) {
+                                arrayListSavedVacancies.add(currentVacancy)
+                            }
+                        }
+
+                        try {
+                            recyclerView.adapter = SavedVacancyAdapter(context!!.applicationContext, arrayListSavedVacancies, this@SavedFragment)
+                        } catch (e: Exception) {
+                            Log.d("Error", "Aranairi araferi")
+                        }
                     }
 
-                    db.addValueEventListener(object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            for (dataSnapshot in snapshot.children) {
-                                val currentVacancy = dataSnapshot.getValue(Vacancy::class.java)?: return
-                                if (list.contains(currentVacancy.id)) {
-                                    arrayListSavedVacancies.add(currentVacancy)
-                                }
-                            }
-                            try {
-                                recyclerView.adapter = SavedVacancyAdapter(context!!.applicationContext, arrayListSavedVacancies, this@SavedFragment)
-                            } catch (e: Exception) {
-                                Log.d("Error", "Aranairi araferi")
-                            }
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            TODO("Not yet implemented")
-                        }
-                    })
-
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+                })
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -112,6 +115,15 @@ class SavedFragment: Fragment(R.layout.fragment_saved), SavedVacancyAdapter.OnIt
         intent.putExtra("imageUrl", currentVacancy.imageUrl)
 
         startActivity(intent)
+    }
+
+    override fun onDeleteClick(position: Int) {
+        val currentVacancy = arrayListSavedVacancies[position]
+
+        dbUsers.child(auth.currentUser!!.uid).child("savedVacancies").child(currentVacancy.id.toString()).setValue(null).addOnSuccessListener {
+            Toast.makeText(activity, "ვაკანსია წაიშალა.", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
 }

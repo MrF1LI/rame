@@ -16,9 +16,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         binding = ActivityLoginBinding.inflate(layoutInflater)
-        if (auth.currentUser != null) {
-            goToMainActivity()
-        }
         setContentView(binding.root)
         init()
     }

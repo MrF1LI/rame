@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Undefined">
         <activity
+            android:name=".LoginActivity"
+            android:exported="true" />
+        <activity
             android:name=".VacancyInfoActivity"
             android:exported="true" />
         <activity
@@ -22,7 +25,8 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".SplashScreenActivity"
+            android:theme="@style/SplashScreenBackground"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.undefined.R
 import com.example.undefined.model.Vacancy
+
 
 class SavedVacancyAdapter(private val context: Context, private val vacancyList: ArrayList<Vacancy>, private val listener: OnItemClickListener):
     RecyclerView.Adapter<SavedVacancyAdapter.ViewHolder>() {
@@ -20,10 +22,18 @@ class SavedVacancyAdapter(private val context: Context, private val vacancyList:
         val description: TextView = view.findViewById(R.id.description)
         val imageView: ImageView = view.findViewById(R.id.imageView)
 
-        private val item: ConstraintLayout = view.findViewById(R.id.itemVacancy)
+        private val item: CardView = view.findViewById(R.id.itemVacancySaved)
 
         init {
             item.setOnClickListener(this)
+
+            item.findViewById<ImageView>(R.id.buttonDelete).setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onDeleteClick(position)
+                }
+            }
+
         }
 
         override fun onClick(p0: View?) {
@@ -56,6 +66,7 @@ class SavedVacancyAdapter(private val context: Context, private val vacancyList:
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)
+        fun onDeleteClick(position: Int)
     }
 
 }

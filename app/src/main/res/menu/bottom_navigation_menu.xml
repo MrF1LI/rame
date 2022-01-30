@@ -2,15 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/homeFragment"
-        android:title="Home"
+        android:title="მთავარი"
         android:icon="@drawable/ic_home" />
 
     <item android:id="@+id/savedFragment"
-        android:title="Saved"
+        android:title="შენახული"
         android:icon="@drawable/ic_work" />
 
     <item android:id="@+id/profileFragment"
-        android:title="Profile"
+        android:title="პროფილი"
         android:icon="@drawable/ic_profile" />
 
 </menu>

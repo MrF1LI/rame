@@ -2,6 +2,7 @@ package com.example.undefined.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -92,26 +93,27 @@ class HomeFragment: Fragment(R.layout.fragment_home), VacancyAdapter.OnItemClick
     }
 
     override fun onSaveClick(position: Int) {
+
         val currentVacancy = arrayListVacancy[position]
-        val key = dbUsers.child(auth.currentUser!!.uid).child("savedVacancies").push().key
 
-        dbUsers.child(auth.currentUser!!.uid).child("savedVacancies").addValueEventListener(object : ValueEventListener {
+        dbUsers.child(auth.currentUser!!.uid).child("savedVacancies").addListenerForSingleValueEvent( object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    val list: ArrayList<String> = arrayListOf()
-                    for (dataSnapshot in snapshot.children) {
-                        val currentId = dataSnapshot.value.toString()
-                        list.add(currentId)
-                    }
-
-                    if (!list.contains(currentVacancy.id)) {
-                        snapshot.ref.child(key.toString()).setValue(currentVacancy.id).addOnSuccessListener {
-                            Toast.makeText(activity, "ვაკანსია შენახულია.", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-
-
+                val list: ArrayList<String> = arrayListOf()
+                for (dataSnapshot in snapshot.children) {
+                    val currentId = dataSnapshot.value.toString()
+                    list.add(currentId)
                 }
+
+                if (list.contains(currentVacancy.id)) {
+                    Toast.makeText(activity, "ეს ვაკანსია უკვე შენახულია.", Toast.LENGTH_SHORT).show()
+                    Log.d("SHOW", "TEST")
+                } else {
+                    Log.d("SHOW", "TEST 1")
+                    snapshot.ref.child(currentVacancy.id.toString()).setValue(currentVacancy.id).addOnSuccessListener {
+                        Toast.makeText(activity, "ვაკანსია შენახულია.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -119,9 +121,6 @@ class HomeFragment: Fragment(R.layout.fragment_home), VacancyAdapter.OnItemClick
             }
         })
 
-//        dbUsers.child(auth.currentUser!!.uid).child("savedVacancies").child(key.toString()).setValue(currentVacancy.id).addOnSuccessListener {
-//            Toast.makeText(activity, "ვაკანსია შენახულია.", Toast.LENGTH_SHORT).show()
-//        }
     }
 
 }
